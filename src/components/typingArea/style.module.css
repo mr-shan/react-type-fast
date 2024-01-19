@@ -1,0 +1,14 @@
+.container {
+  border: solid 1px var(--text-1);
+  border-radius: var(--border-radius);
+  width: 80%;
+  background-color: var(--bg-3);
+  margin: auto;
+  margin-top: 10%;
+  padding: 2rem 2.5rem;
+  font-size: 1.5rem;
+  line-height: 1.8;
+  word-spacing: 2px;
+  color: var(--text-1);
+  text-align: center;
+}

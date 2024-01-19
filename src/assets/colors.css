@@ -3,6 +3,7 @@
   --text-2: #0A171A;
   --bg-1: #FBFDFE;
   --bg-2: #EBEBEB;
+  --bg-3: white;
   --primary: #53A3C1;
   --secondary: #C59DDD;
   --accent: #CA6DCA;
@@ -14,9 +15,10 @@
 
 [data-theme="dark"] {
   --text-1: #A5AEB0;
-  --text-1: #fdfdfd;
+  --text-2: #fdfdfd;
   --bg-1: #0A171A;;
   --bg-2: #1A2123;
+  --bg-3: #1A2123;
   --primary: #53A3C1;
   --secondary: #C59DDD;
   --accent: #CA6DCA;

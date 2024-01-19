@@ -2,6 +2,7 @@ import React from 'react';
 
 import Header from './components/header/header';
 import Menu from './components/menu/menu';
+import TypingArea from './components/typingArea';
 
 import './assets/colors.css';
 import './App.css';
@@ -31,6 +32,7 @@ function App() {
         changeTimeConstraint={timeConstraintChangeHandler}
         changeLimit={setConstraintLimit}
       />
+      <TypingArea />
     </>
   );
 }
