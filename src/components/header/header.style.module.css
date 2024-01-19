@@ -1,0 +1,63 @@
+.header {
+  border: solid 1px var(--bg-2);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  order: solid 1px var(--bg-2);
+
+}
+
+.logoWrapper {
+  background-color: var(--bg-2);
+  padding: 0 2.5rem;
+  border-radius: var(--border-radius);
+}
+
+.logo {
+  background: linear-gradient(45deg, var(--primary), var(--accent));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: var(--h1);
+  margin: 8px;
+  user-select: none;
+  cursor: pointer;
+}
+
+.logo:hover {
+  transition: all 1s ease-out;
+  background: linear-gradient(45deg, var(--accent), var(--primary));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.navButtonsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.listElement {
+  display: flex;
+}
+
+.navBtn {
+  display: flex;
+  cursor: none;
+  transition: all 0.25s ease-out;
+  color: var(--secondary);
+}
+
+.navBtn:hover {
+  color: var(--accent);
+}

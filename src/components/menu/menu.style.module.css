@@ -1,0 +1,56 @@
+.container {
+  background-color: var(--bg-2);
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: fit-content;
+  gap: 1.25rem;
+  margin: auto;
+  margin-top: 10%;
+}
+
+.menuButton {
+  color: var(--text-1);
+  transition: all 0.25s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  gap: 5px;
+  line-height: 0;
+  transition: all 0.25s ease-out;
+  animation: flash-in 0.75s ease-out forwards;
+}
+
+.menuButton:hover {
+  color: var(--secondary);
+}
+
+.selected {
+  color: var(--accent);
+}
+
+.selected:hover {
+  color: var(--accent);
+}
+
+.separator {
+  height: 1.5rem;
+  width: 5px;
+  background-color: var(--bg-1);
+  border-radius: 3px;
+}
+
+@keyframes flash-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
