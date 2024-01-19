@@ -1,35 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+
+import Header from './components/header/header';
+import Menu from './components/menu/menu';
+
+import './assets/colors.css';
+import './App.css';
+
+import { timeConstraint } from './types';
+import { TIME_OPTIONS, WORDS_OPTIONS } from './types/constants';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [timeConstraint, setTimeConstraint] =
+    React.useState<timeConstraint>('time');
+  const [constraintLimit, setConstraintLimit] = React.useState<number>(
+    TIME_OPTIONS[0]
+  );
+
+  const timeConstraintChangeHandler = (event: timeConstraint) => {
+    setTimeConstraint(event);
+    const options = event === 'time' ? TIME_OPTIONS : WORDS_OPTIONS;
+    setConstraintLimit(options[0]);
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Header />
+      <Menu
+        timeConstraint={timeConstraint}
+        constraintLimit={constraintLimit}
+        changeTimeConstraint={timeConstraintChangeHandler}
+        changeLimit={setConstraintLimit}
+      />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
