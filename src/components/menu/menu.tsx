@@ -11,8 +11,8 @@ import { TIME_OPTIONS, WORDS_OPTIONS } from '../../types/constants';
 interface IProps {
   timeConstraint: timeConstraint;
   constraintLimit: number;
-  changeTimeConstraint: any;
-  changeLimit: any
+  changeTimeConstraint: (event: timeConstraint) => void;
+  changeLimit: (event: number) => void;
 }
 
 const Menu = (props: IProps) => {

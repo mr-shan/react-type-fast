@@ -1,0 +1,13 @@
+.wordWrapper {
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+}
+
+.rightChar {
+  color: var(--primary);
+}
+
+.wrongChar {
+  color: var(--error);
+}

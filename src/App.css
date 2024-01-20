@@ -1,3 +1,21 @@
-.app_container {
-  color: royalblue;
+.refreshWrapper {
+  margin: auto;
+  margin-top: 10%;
+  left: 0;
+  right: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.refreshWrapper button {
+  outline: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--secondary);
+  transition: all 0.25s ease-out;
+}
+
+.refreshWrapper button:hover {
+  color: var(--accent);
 }

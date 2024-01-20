@@ -1,3 +1,5 @@
+export type timeConstraint = 'time' | 'words'
+
 export interface IconProps {
   height?: number;
   width?: number;
@@ -5,4 +7,9 @@ export interface IconProps {
   background?: string;
 }
 
-export type timeConstraint = 'time' | 'words'
+export interface TypingWord {
+  index: number
+  original: string
+  typed: string
+  wrongChars: number
+}
