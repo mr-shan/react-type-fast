@@ -21,7 +21,7 @@ const KeysToAvoid = [
 ];
 
 interface IProps {
-  gameOver: any;
+  gameOver: (wordList: TypingWord[]) => void;
   words: string[];
 }
 
@@ -29,7 +29,7 @@ const TypingArea = (props: IProps) => {
   const [wordList, setWordList] = React.useState<Array<TypingWord>>([]);
   const [currentWordIndex, setCurrentWordIndex] = React.useState(0);
   const [currentCharIndex, setCurrentCharIndex] = React.useState(0);
-  const typingAreaRef = React.useRef<HTMLDivElement>(null)
+  const typingAreaRef = React.useRef<HTMLDivElement>(null);
 
   const handleGameOver = () => {
     props.gameOver(wordList);
@@ -44,7 +44,7 @@ const TypingArea = (props: IProps) => {
     wordInProcess.wrongChars = incorrectChars;
   };
 
-  const keyPressHandler = (event: any) => {
+  const keyPressHandler = (event: React.KeyboardEvent<HTMLElement>) => {
     if (KeysToAvoid.includes(event.key)) return;
 
     const key = event.key;
@@ -123,11 +123,16 @@ const TypingArea = (props: IProps) => {
     setWordList(wd);
     setCurrentWordIndex(0);
     setCurrentCharIndex(0);
-    typingAreaRef.current?.focus()
+    typingAreaRef.current?.focus();
   }, [props.words]);
 
   return (
-    <div ref={typingAreaRef} className={styles.container} tabIndex={0} onKeyDown={keyPressHandler}>
+    <div
+      ref={typingAreaRef}
+      className={styles.container}
+      tabIndex={0}
+      onKeyDown={keyPressHandler}
+    >
       <div className={styles.words}>
         {wordList.map((tw: TypingWord) => (
           <Word

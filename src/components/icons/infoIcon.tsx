@@ -10,7 +10,7 @@ const InfoIcon = (props: IconProps) => {
     <svg
       width={width}
       height={height}
-      viewBox={`0 0 ${width} ${height}`}
+      viewBox="0 0 36 36"
       fill={background}
       xmlns='http://www.w3.org/2000/svg'
     >
@@ -22,7 +22,7 @@ const InfoIcon = (props: IconProps) => {
       </g>
       <defs>
         <clipPath id='clip0_3_27'>
-          <rect width={width} height={height} fill={background} />
+          <rect width="36" height="36" fill={background} />
         </clipPath>
       </defs>
     </svg>

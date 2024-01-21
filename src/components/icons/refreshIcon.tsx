@@ -10,19 +10,19 @@ const RefreshIcon = (props: IconProps) => {
     <svg
       width={width}
       height={height}
-      viewBox={`0 0 ${width} ${height}`}
+      viewBox="0 0 36 36"
       fill={background}
       xmlns='http://www.w3.org/2000/svg'
     >
-      <g clip-path='url(#clip0_203_23)'>
+      <g clipPath='url(#clip0_203_23)'>
         <path
-          d='M24 10V2L14 12L24 22V14C30.62 14 36 19.38 36 26C36 32.62 30.62 38 24 38C17.38 38 12 32.62 12 26H8C8 34.84 15.16 42 24 42C32.84 42 40 34.84 40 26C40 17.16 32.84 10 24 10Z'
+          d='M18 7.5V1.5L10.5 9L18 16.5V10.5C22.965 10.5 27 14.535 27 19.5C27 24.465 22.965 28.5 18 28.5C13.035 28.5 9 24.465 9 19.5H6C6 26.13 11.37 31.5 18 31.5C24.63 31.5 30 26.13 30 19.5C30 12.87 24.63 7.5 18 7.5Z'
           fill={color}
         />
       </g>
       <defs>
         <clipPath id='clip0_203_23'>
-          <rect width={width} height={height} fill={background} />
+          <rect width='36' height='36' fill={background} />
         </clipPath>
       </defs>
     </svg>

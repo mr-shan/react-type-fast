@@ -10,7 +10,7 @@ const TimeIcon = (props: IconProps) => {
     <svg
       width={width}
       height={height}
-      viewBox={`0 0 ${width} ${height}`}
+      viewBox="0 0 24 24"
       fill={background}
       xmlns='http://www.w3.org/2000/svg'
     >
@@ -26,7 +26,7 @@ const TimeIcon = (props: IconProps) => {
       </g>
       <defs>
         <clipPath id='clip0_3_32'>
-          <rect width={width} height={height} fill={background} />
+          <rect width="24" height="24" fill={background} />
         </clipPath>
       </defs>
     </svg>

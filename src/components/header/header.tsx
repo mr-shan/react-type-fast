@@ -6,6 +6,7 @@ import LeaderBoardIcon from '../icons/leaderboardIcon';
 import SettingIcon from '../icons/settingIcon';
 
 const Header = () => {
+  const btnDims = { width: 28, height: 28 };
   return (
     <header className={styles.header}>
       <nav className={styles.nav}>
@@ -15,17 +16,17 @@ const Header = () => {
         <ul className={styles.navButtonsList}>
           <li className={styles.listElement}>
             <button className={[styles.navBtn, globalStyles.btn].join(' ')}>
-              <LeaderBoardIcon />
+              <LeaderBoardIcon width={btnDims.width} height={btnDims.height} />
             </button>
           </li>
           <li className={styles.listElement}>
             <button className={[styles.navBtn, globalStyles.btn].join(' ')}>
-              <InfoIcon />
+              <InfoIcon width={btnDims.width} height={btnDims.height} />
             </button>
           </li>
           <li className={styles.listElement}>
             <button className={[styles.navBtn, globalStyles.btn].join(' ')}>
-              <SettingIcon />
+              <SettingIcon width={btnDims.width} height={btnDims.height} />
             </button>
           </li>
         </ul>

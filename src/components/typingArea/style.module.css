@@ -14,10 +14,15 @@
   transition: all 0.25s ease-out;
 }
 
+.container:focus {
+  box-shadow: 0px 0px 15px var(--text-1);
+  border: none;
+}
+
 .container:not(.container:focus)::before {
   content: '< Click here to start typing >';
-  color: var(--primary);
-  font-weight: bold;
+  color: var(--text-2);
+  font-weight: 500;
   font-size: 1.25rem;
   position: absolute;
   border: none;
@@ -30,11 +35,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  backdrop-filter: blur(0.25rem);
-  -webkit-backdrop-filter: blur(0.25rem);
+  backdrop-filter: blur(0.4rem);
+  -webkit-backdrop-filter: blur(0.4rem);
   transition: all 0.25s ease-out;
   opacity: 0;
-  animation: fade-in 0.5s ease-out 1s forwards;
+  animation: fade-in 0.5s ease-out 0.75s forwards;
 }
 
 .typingIndicator {

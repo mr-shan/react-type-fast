@@ -49,12 +49,14 @@ function App() {
     const numberOfWordsNeeded =
       timeConstraint === 'time' ? constraintLimit * 6 : constraintLimit;
     generateRandomWords(numberOfWordsNeeded);
+    setIsGameOver(false)
   }
 
   React.useEffect(() => {
     const numberOfWordsNeeded =
       timeConstraint === 'time' ? constraintLimit * 6 : constraintLimit;
     generateRandomWords(numberOfWordsNeeded);
+    setIsGameOver(false)
   }, [timeConstraint, constraintLimit]);
 
   return (
@@ -73,7 +75,7 @@ function App() {
       )}
       <div className='refreshWrapper'>
         <button onClick={refreshWordsHandler}>
-          <RefreshIcon />
+          <RefreshIcon width={36} height={36}/>
         </button>
       </div>
     </>
