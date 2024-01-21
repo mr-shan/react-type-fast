@@ -9,13 +9,13 @@ import './assets/colors.css';
 import './App.css';
 
 import { timeConstraint, TypingWord } from './types';
-import { TIME_OPTIONS, WORDS_OPTIONS, RANDOM_WORDS } from './types/constants';
+import { TIME_OPTIONS, WORDS_OPTIONS, COMMON_WORDS } from './types/constants';
 
 function App() {
   const [timeConstraint, setTimeConstraint] =
-    React.useState<timeConstraint>('words');
+    React.useState<timeConstraint>('time');
   const [constraintLimit, setConstraintLimit] = React.useState<number>(
-    WORDS_OPTIONS[1]
+    TIME_OPTIONS[0]
   );
   const [isGameOver, setIsGameOver] = React.useState(false);
   const [generatedWords, setGeneratedWords] = React.useState<Array<string>>([]);
@@ -36,8 +36,9 @@ function App() {
     let wordsCounter = numberOfWordsNeeded;
     while (wordsCounter > 0) {
       const randomIndex = Math.floor(Math.random() * 1000);
-      const randomWord = RANDOM_WORDS[randomIndex];
-      if (randomWord && !wordsGenerated.includes(randomWord)) {
+      const randomWord = COMMON_WORDS[randomIndex];
+      // if (randomWord && !wordsGenerated.includes(randomWord)) {
+      if (randomWord) {
         wordsGenerated.push(randomWord);
         wordsCounter--;
       }
@@ -49,14 +50,14 @@ function App() {
     const numberOfWordsNeeded =
       timeConstraint === 'time' ? constraintLimit * 6 : constraintLimit;
     generateRandomWords(numberOfWordsNeeded);
-    setIsGameOver(false)
-  }
+    setIsGameOver(false);
+  };
 
   React.useEffect(() => {
     const numberOfWordsNeeded =
       timeConstraint === 'time' ? constraintLimit * 6 : constraintLimit;
     generateRandomWords(numberOfWordsNeeded);
-    setIsGameOver(false)
+    setIsGameOver(false);
   }, [timeConstraint, constraintLimit]);
 
   return (
@@ -71,11 +72,16 @@ function App() {
       {isGameOver ? (
         <h1>Game Over</h1>
       ) : (
-        <TypingArea words={generatedWords} gameOver={onGameOver} />
+        <TypingArea
+          words={generatedWords}
+          gameOver={onGameOver}
+          timeConstraint={timeConstraint}
+          constraintLimit={constraintLimit}
+        />
       )}
       <div className='refreshWrapper'>
         <button onClick={refreshWordsHandler}>
-          <RefreshIcon width={36} height={36}/>
+          <RefreshIcon width={36} height={36} />
         </button>
       </div>
     </>

@@ -8,8 +8,10 @@ export interface IconProps {
 }
 
 export interface TypingWord {
-  index: number
+  index: number | string
   original: string
   typed: string
   wrongChars: number
+  startTime: number
+  endTime: number
 }

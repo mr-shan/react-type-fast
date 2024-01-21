@@ -5,7 +5,7 @@ import { flushSync } from 'react-dom';
 import styles from './style.module.css';
 
 import Word from './word';
-import { TypingWord } from '../../types';
+import { TypingWord, timeConstraint } from '../../types';
 
 const KeysToAvoid = [
   'Tab',
@@ -23,15 +23,31 @@ const KeysToAvoid = [
 interface IProps {
   gameOver: (wordList: TypingWord[]) => void;
   words: string[];
+  timeConstraint: timeConstraint;
+  constraintLimit: number;
 }
 
 const TypingArea = (props: IProps) => {
   const [wordList, setWordList] = React.useState<Array<TypingWord>>([]);
   const [currentWordIndex, setCurrentWordIndex] = React.useState(0);
   const [currentCharIndex, setCurrentCharIndex] = React.useState(0);
+  const [totalCharacters, setTotalCharacters] = React.useState(0);
+  const [totalCharTyped, setTotalCharTyped] = React.useState(0);
+  const [grossSpeed, setGrossSpeed] = React.useState<number>(0);
+  const [startTime, setStartTime] = React.useState<number>(0);
+  const [timeoutRef, setTimeoutRef] = React.useState<number>();
+  const [intervalRef, setIntervalRef] = React.useState<number>();
+  const [isGameOver, setIsGameOver] = React.useState<boolean>(false);
+  const [limitLeft, setLimitLeft] = React.useState<number>(props.constraintLimit)
   const typingAreaRef = React.useRef<HTMLDivElement>(null);
 
   const handleGameOver = () => {
+    
+    clearTimeout(timeoutRef)
+    clearInterval(intervalRef)
+    setStartTime(0)
+    setTimeoutRef(0)
+    setIsGameOver(true)
     props.gameOver(wordList);
   };
 
@@ -45,7 +61,26 @@ const TypingArea = (props: IProps) => {
   };
 
   const keyPressHandler = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (KeysToAvoid.includes(event.key)) return;
+    if (KeysToAvoid.includes(event.key) || isGameOver) return;
+
+    if (
+      currentCharIndex === 0 &&
+      currentWordIndex === 0 &&
+      startTime === 0
+    ) {
+      setStartTime(performance.now());
+      if (props.timeConstraint === 'time') {
+        const timeout = setTimeout(handleGameOver, props.constraintLimit * 1000)
+        setTimeoutRef(timeout)
+        flushSync(() => setLimitLeft(props.constraintLimit))
+        console.log("timeout has been set")
+        const interval = setInterval(() => {
+          console.log("inside timeout")
+          setLimitLeft(oldLimit => oldLimit - 1)
+        }, 1000)
+        setIntervalRef(interval)
+      }
+    }
 
     const key = event.key;
     switch (key) {
@@ -60,6 +95,7 @@ const TypingArea = (props: IProps) => {
           // handle the condition where a word is not completely typed but space
           // is pressed resulting skipping few character in current word
           // and jumping over to next word.
+          wordList[currentWordIndex].endTime = performance.now();
           const curLen = wordList[currentWordIndex].typed.length;
           const ogLen = wordList[currentWordIndex].original.length;
           if (curLen < ogLen) {
@@ -70,10 +106,11 @@ const TypingArea = (props: IProps) => {
             setWordScore(wordsCopy[currentWordIndex]);
             setWordList(wordsCopy);
           }
-
           setCurrentCharIndex(0);
           setCurrentWordIndex((oldIndex) => oldIndex + 1);
         });
+        if (props.timeConstraint === 'words')
+          setLimitLeft((oldIndex) => oldIndex - 1);
         break;
       // backspace key press handler
       case 'Backspace':
@@ -92,38 +129,63 @@ const TypingArea = (props: IProps) => {
             ].typed.substring(0, wordsCopy[currentWordIndex].typed.length - 1);
             setWordList(wordsCopy);
             setCurrentCharIndex((oldIndex) => oldIndex - 1);
+            setTotalCharTyped((oldChars) => oldChars - 1);
           });
         }
         break;
       default:
         flushSync(() => {
           const wordsCopy = [...wordList];
+          if (currentCharIndex === 0) {
+            wordsCopy[currentWordIndex].startTime = performance.now();
+          }
           wordsCopy[currentWordIndex].typed += key;
           setWordScore(wordsCopy[currentWordIndex]);
           setWordList(wordsCopy);
           setCurrentCharIndex((oldIndex) => oldIndex + 1);
+          setTotalCharTyped((oldChars) => oldChars + 1);
         });
         if (currentWordIndex === wordList.length - 1) {
           const lastWord = wordList[wordList.length - 1];
           if (lastWord.typed === lastWord.original) handleGameOver();
         }
+        calculateSpeed();
         break;
     }
   };
 
+  const calculateSpeed = () => {
+    if (totalCharTyped < 2) return;
+
+    const gross =
+      totalCharTyped / 5 / ((performance.now() - startTime) / 1000 / 60);
+    setGrossSpeed(Math.round(gross));
+  };
+
   React.useEffect(() => {
+    let numberOfCharacters = 0;
     const wd: TypingWord[] = props.words.map((word: string, index: number) => {
+      numberOfCharacters += word.length;
       return {
-        index: index,
+        index: index + word,
         original: word,
         typed: '',
         wrongChars: 0,
+        startTime: NaN,
+        endTime: NaN,
       };
     });
+    setTotalCharacters(numberOfCharacters);
     setWordList(wd);
     setCurrentWordIndex(0);
     setCurrentCharIndex(0);
+    setLimitLeft(props.constraintLimit)
     typingAreaRef.current?.focus();
+    clearTimeout(timeoutRef)
+    clearInterval(intervalRef)
+    setStartTime(0)
+    setTimeoutRef(0)
+    setIsGameOver(false)
   }, [props.words]);
 
   return (
@@ -133,12 +195,16 @@ const TypingArea = (props: IProps) => {
       tabIndex={0}
       onKeyDown={keyPressHandler}
     >
+      <div className={styles.typingStatsWrapper}>
+        <span>{limitLeft }</span>
+        <span>{grossSpeed}</span>
+      </div>
       <div className={styles.words}>
-        {wordList.map((tw: TypingWord) => (
+        {wordList.map((tw: TypingWord, index: number) => (
           <Word
-            key={tw.original}
+            key={tw.index}
             typingWord={tw}
-            isActive={currentWordIndex === tw.index}
+            isActive={currentWordIndex === index}
             currentWordIndex={currentWordIndex}
             currentCharIndex={currentCharIndex}
           ></Word>
