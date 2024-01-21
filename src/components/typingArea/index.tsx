@@ -2,6 +2,8 @@
 import React from 'react';
 import { flushSync } from 'react-dom';
 
+import useInterval from '../hooks/useInterval';
+
 import styles from './style.module.css';
 
 import Word from './word';
@@ -35,20 +37,17 @@ const TypingArea = (props: IProps) => {
   const [totalCharTyped, setTotalCharTyped] = React.useState(0);
   const [grossSpeed, setGrossSpeed] = React.useState<number>(0);
   const [startTime, setStartTime] = React.useState<number>(0);
-  const [timeoutRef, setTimeoutRef] = React.useState<number>();
-  const [intervalRef, setIntervalRef] = React.useState<number>();
+  const [intervalRef, setIntervalRef] = React.useState<number>(0);
   const [isGameOver, setIsGameOver] = React.useState<boolean>(false);
-  const [limitLeft, setLimitLeft] = React.useState<number>(props.constraintLimit)
+  const [limitLeft, setLimitLeft] = React.useState<number>(0);
+  const [timer, setTimer] = React.useState(0);
   const typingAreaRef = React.useRef<HTMLDivElement>(null);
 
-  const handleGameOver = () => {
-    
-    clearTimeout(timeoutRef)
-    clearInterval(intervalRef)
-    setStartTime(0)
-    setTimeoutRef(0)
-    setIsGameOver(true)
+  const handleGameOver = (interval: number = 0) => {
+    clearInterval(interval);
     props.gameOver(wordList);
+    resetAll();
+    setIsGameOver(true);
   };
 
   const setWordScore = (wordInProcess: TypingWord) => {
@@ -66,19 +65,29 @@ const TypingArea = (props: IProps) => {
     if (
       currentCharIndex === 0 &&
       currentWordIndex === 0 &&
-      startTime === 0
+      startTime === 0 &&
+      !isGameOver
     ) {
       setStartTime(performance.now());
       if (props.timeConstraint === 'time') {
-        const timeout = setTimeout(handleGameOver, props.constraintLimit * 1000)
-        setTimeoutRef(timeout)
-        flushSync(() => setLimitLeft(props.constraintLimit))
-        console.log("timeout has been set")
+        flushSync(() => setLimitLeft(props.constraintLimit));
         const interval = setInterval(() => {
-          console.log("inside timeout")
-          setLimitLeft(oldLimit => oldLimit - 1)
+          console.log('Inside interval');
+          setLimitLeft((oldLimit) => {
+            const newLimit = oldLimit - 1;
+            if (newLimit === 0) {
+              setTimeout(() => handleGameOver(interval), 0);
+            }
+            return newLimit;
+          });
+        }, 1000);
+      } else {
+        flushSync(() => setTimer(0))
+        const interval = setInterval(() => {
+          console.log("Inside timer")
+          setTimer(oldTime => oldTime + 1)
         }, 1000)
-        setIntervalRef(interval)
+        flushSync(() => setIntervalRef(interval))
       }
     }
 
@@ -149,7 +158,6 @@ const TypingArea = (props: IProps) => {
           const lastWord = wordList[wordList.length - 1];
           if (lastWord.typed === lastWord.original) handleGameOver();
         }
-        calculateSpeed();
         break;
     }
   };
@@ -162,7 +170,27 @@ const TypingArea = (props: IProps) => {
     setGrossSpeed(Math.round(gross));
   };
 
+  const resetAll = () => {
+    clearInterval(intervalRef);
+    setWordList([]);
+    setCurrentWordIndex(0);
+    setCurrentCharIndex(0);
+    setTotalCharacters(0);
+    setTotalCharTyped(0);
+    setGrossSpeed(0);
+    setStartTime(0);
+    setIntervalRef(0);
+    setLimitLeft(0);
+  };
+
   React.useEffect(() => {
+    if (!isGameOver && startTime) {
+      calculateSpeed();
+    }
+  }, [limitLeft, timer]);
+
+  React.useEffect(() => {
+    resetAll();
     let numberOfCharacters = 0;
     const wd: TypingWord[] = props.words.map((word: string, index: number) => {
       numberOfCharacters += word.length;
@@ -177,15 +205,8 @@ const TypingArea = (props: IProps) => {
     });
     setTotalCharacters(numberOfCharacters);
     setWordList(wd);
-    setCurrentWordIndex(0);
-    setCurrentCharIndex(0);
-    setLimitLeft(props.constraintLimit)
+    setLimitLeft(props.constraintLimit);
     typingAreaRef.current?.focus();
-    clearTimeout(timeoutRef)
-    clearInterval(intervalRef)
-    setStartTime(0)
-    setTimeoutRef(0)
-    setIsGameOver(false)
   }, [props.words]);
 
   return (
@@ -196,7 +217,7 @@ const TypingArea = (props: IProps) => {
       onKeyDown={keyPressHandler}
     >
       <div className={styles.typingStatsWrapper}>
-        <span>{limitLeft }</span>
+        <span>{limitLeft}</span>
         <span>{grossSpeed}</span>
       </div>
       <div className={styles.words}>
