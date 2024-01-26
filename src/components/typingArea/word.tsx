@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useRef } from 'react';
 
 import styles from './word.module.css';
 import { TypingWord } from '../../types';
@@ -27,8 +27,20 @@ const WordOg = (props: IProps) => {
   const showTypingIndicator =
     props.currentCharIndex > props.typingWord.original.length - 1 && props.isActive;
 
+  const id = props.typingWord.index + props.typingWord.original;
+
+  if (props.isActive) {
+    const el = document.getElementById(id)
+    const offsetTop = el?.offsetTop
+    const parentOffsetTop = el?.parentNode?.offsetTop
+    if (offsetTop && parentOffsetTop) {
+      if (offsetTop > parentOffsetTop + 60) {
+        el.parentNode.scrollTo(0, offsetTop - (parentOffsetTop + el.offsetHeight))
+      }
+    }
+  }
   return (
-    <div className={styles.wordWrapper}>
+    <div className={styles.wordWrapper} id={id}>
       {characters.map((char: string, index: number) => (
         <Character
           key={index}

@@ -72,7 +72,6 @@ const TypingArea = (props: IProps) => {
       if (props.timeConstraint === 'time') {
         flushSync(() => setLimitLeft(props.constraintLimit));
         const interval = setInterval(() => {
-          console.log('Inside interval');
           setLimitLeft((oldLimit) => {
             const newLimit = oldLimit - 1;
             if (newLimit === 0) {
@@ -89,7 +88,6 @@ const TypingArea = (props: IProps) => {
       } else {
         flushSync(() => setTimer(0));
         const interval = setInterval(() => {
-          console.log('Inside timer');
           setTimer((oldTime) => oldTime + 1);
         }, 1000);
         flushSync(() => setIntervalRef((oldVal) => {
@@ -115,7 +113,6 @@ const TypingArea = (props: IProps) => {
           const curLen = wordList[currentWordIndex].typed.length;
           const ogLen = wordList[currentWordIndex].original.length;
           if (curLen < ogLen) {
-            console.log(ogLen, curLen);
             const wordsCopy = [...wordList];
             const charsToAdd = ogLen - curLen;
             for (let i = 0; i < charsToAdd; i++)
