@@ -12,6 +12,7 @@ const RefreshIcon = (props: IconProps) => {
       height={height}
       viewBox="0 0 36 36"
       fill={background}
+      style={{transform: 'rotateY(180deg)'}}
       xmlns='http://www.w3.org/2000/svg'
     >
       <g clipPath='url(#clip0_203_23)'>

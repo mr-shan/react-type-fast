@@ -13,10 +13,36 @@
   background: transparent;
   cursor: pointer;
   color: var(--secondary);
-  transition: all 0.25s ease-out;
-  transform: rotateY(180deg);
+  transition: all 0.5s ease-out;
+  opacity: 0;
+  animation: fade-in 0.5s ease-out forwards;
+  animation-delay: 1s;
 }
 
 .refreshWrapper button:hover {
   color: var(--accent);
+  transform: rotate(360deg);
+}
+
+.refreshWrapper button:active {
+  color: var(--accent);
+  animation: rotate-in 0.5s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rotate-in {
+  from {
+    transform: rotateY(360);
+  }
+  to {
+    transform: rotateY(0);
+  }
 }

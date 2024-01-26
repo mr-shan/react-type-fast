@@ -20,8 +20,9 @@
   font-size: 1.1rem;
   gap: 5px;
   line-height: 0;
+  opacity: 0;
   transition: all 0.25s ease-out;
-  animation: flash-in 0.75s ease-out forwards;
+  animation: flash-in 0.5s ease-out forwards;
 }
 
 .menuButton:hover {

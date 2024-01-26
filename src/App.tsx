@@ -26,6 +26,7 @@ function App() {
   const [accuracy, setAccuracy] = React.useState(0);
   const [typedWords, setTypedWords] = React.useState<Array<TypingWord>>([]);
   const [gameId, setGameId] = React.useState<string>(Date.now().toString())
+  const [maxSpeed, setMaxSpeed] = React.useState(0)
 
   const timeConstraintChangeHandler = (event: timeConstraint) => {
     setTimeConstraint(event);
@@ -38,6 +39,7 @@ function App() {
     let wrongWords = 0,
       grossSpeed = 0,
       totalTypedWords = 0,
+      maxSpeedWord = 0,
       totalTypedChars = 0;
     wordList.forEach((word: TypingWord) => {
       if (isNaN(word.startTime) || isNaN(word.endTime)) return;
@@ -52,6 +54,7 @@ function App() {
         5 /
         ((word.endTime - word.startTime) / 1000 / 60);
       }
+      if (word.speed > maxSpeedWord) maxSpeedWord = word.speed
       if (word.wrongChars > 0) wrongWords++;
       grossSpeed += word.speed
       totalTypedWordList.push(word)
@@ -67,6 +70,7 @@ function App() {
     setWrongWords(wrongWords);
     setIsGameOver(true);
     setTypedWords(totalTypedWordList)
+    setMaxSpeed(Math.round(maxSpeedWord))
   };
 
   const generateRandomWords = (numberOfWordsNeeded: number) => {
@@ -93,6 +97,7 @@ function App() {
     setNetSpeed(0);
     setAccuracy(0);
     setTypedWords([]);
+    setMaxSpeed(0);
     for(let i = 0; i <= window.typeTestIntervalRef; i++) {
       clearInterval(i)
     }
@@ -128,6 +133,8 @@ function App() {
           netSpeed={netSpeed}
           wrongWords={wrongWords}
           wordsList={typedWords}
+          maxSpeed={maxSpeed}
+          constraintLimit={constraintLimit}
         />
       ) : (
         <TypingArea

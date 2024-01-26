@@ -47,6 +47,7 @@ const Menu = (props: IProps) => {
           styles.menuButton,
           globalStyles.btn,
         ].join(' ')}
+        style={{animationDelay: '100ms'}}
         onClick={() => timeConstraintChangeHandler('words')}
       >
         <WordsIcon />
@@ -56,7 +57,7 @@ const Menu = (props: IProps) => {
       <div className={styles.separator}></div>
 
       {/* list of available options for selected menu */}
-      {options.map((option: number) => (
+      {options.map((option: number, index: number) => (
         <button
           className={[
             props.constraintLimit === option ? styles.selected : '',
@@ -64,6 +65,7 @@ const Menu = (props: IProps) => {
             globalStyles.btn,
           ].join(' ')}
           key={option}
+          style={{animationDelay: `${index * 60}ms`}}
           onClick={() => constraintLimitChangeHandler(option)}
         >
           {option}
