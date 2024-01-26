@@ -14,4 +14,5 @@ export interface TypingWord {
   wrongChars: number
   startTime: number
   endTime: number
+  speed?: number
 }

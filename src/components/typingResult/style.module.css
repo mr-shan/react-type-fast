@@ -1,0 +1,48 @@
+.container {
+  position: relative;
+
+}
+.chart {
+  border: solid 1px var(--text-1);
+  border-radius: var(--border-radius);
+  width: 90%;
+  max-width: 75rem;
+  background-color: var(--bg-1);
+  margin: auto;
+  margin-top: auto;
+  margin-top: 10%;
+  padding: 2rem 2.5rem;
+  font-size: 1.5rem;
+  color: var(--text-1);
+  position: relative;
+  outline: none;
+  transition: all 0.25s ease-out;
+}
+
+.stats {
+  width: 70%;
+  max-width: 36rem;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.statItem {
+  flex: 1;
+}
+
+.statsScore {
+  color: var(--primary);
+  font-size: 4rem;
+  font-weight: 500;
+  line-height: 0.9;
+}
+.statsTitle {
+  color: var(--text-1);
+  font-size: 0.9rem;
+  padding-left: 4px;
+}

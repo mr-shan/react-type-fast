@@ -4,6 +4,7 @@ import Header from './components/header/header';
 import Menu from './components/menu/menu';
 import TypingArea from './components/typingArea';
 import RefreshIcon from './components/icons/refreshIcon';
+import TypingResult from './components/typingResult';
 
 import './assets/colors.css';
 import './App.css';
@@ -19,6 +20,12 @@ function App() {
   );
   const [isGameOver, setIsGameOver] = React.useState(false);
   const [generatedWords, setGeneratedWords] = React.useState<Array<string>>([]);
+  const [wrongWords, setWrongWords] = React.useState(0);
+  const [grossSpeed, setGrossSpeed] = React.useState(0);
+  const [netSpeed, setNetSpeed] = React.useState(0);
+  const [accuracy, setAccuracy] = React.useState(0);
+  const [typedWords, setTypedWords] = React.useState<Array<TypingWord>>([]);
+  const [gameId, setGameId] = React.useState<string>(Date.now().toString())
 
   const timeConstraintChangeHandler = (event: timeConstraint) => {
     setTimeConstraint(event);
@@ -27,11 +34,43 @@ function App() {
   };
 
   const onGameOver = (wordList: TypingWord[]) => {
-    console.log(wordList);
+    const totalTypedWordList: TypingWord[]= []
+    let wrongWords = 0,
+      grossSpeed = 0,
+      totalTypedWords = 0,
+      totalTypedChars = 0;
+    wordList.forEach((word: TypingWord) => {
+      if (isNaN(word.startTime) || isNaN(word.endTime)) return;
+      totalTypedWords++;
+      totalTypedChars += word.typed.length;
+      if (word.endTime === word.startTime) {
+        // this is skipped condition.
+        word.speed = constraintLimit;
+      } else {
+        word.speed =
+        word.original.length /
+        5 /
+        ((word.endTime - word.startTime) / 1000 / 60);
+      }
+      if (word.wrongChars > 0) wrongWords++;
+      grossSpeed += word.speed
+      totalTypedWordList.push(word)
+    });
+    if (timeConstraint === 'time')
+      grossSpeed = Math.round(totalTypedChars / 5 / (constraintLimit / 60));
+    else 
+      grossSpeed = Math.round(grossSpeed / totalTypedWords);
+    const netWpm = Math.round(grossSpeed - wrongWords);
+    setGrossSpeed(grossSpeed);
+    setNetSpeed(netWpm);
+    setAccuracy(Math.round((netWpm / grossSpeed) * 100));
+    setWrongWords(wrongWords);
     setIsGameOver(true);
+    setTypedWords(totalTypedWordList)
   };
 
   const generateRandomWords = (numberOfWordsNeeded: number) => {
+    setGameId(Date.now().toString())
     const wordsGenerated: string[] = [];
     let wordsCounter = numberOfWordsNeeded;
     while (wordsCounter > 0) {
@@ -44,6 +83,19 @@ function App() {
       }
     }
     setGeneratedWords(wordsGenerated);
+    resetAll();
+  };
+
+  const resetAll = () => {
+    setIsGameOver(false);
+    setWrongWords(0);
+    setGrossSpeed(0);
+    setNetSpeed(0);
+    setAccuracy(0);
+    setTypedWords([]);
+    for(let i = 0; i <= window.typeTestIntervalRef; i++) {
+      clearInterval(i)
+    }
   };
 
   const refreshWordsHandler = () => {
@@ -70,9 +122,16 @@ function App() {
         changeLimit={setConstraintLimit}
       />
       {isGameOver ? (
-        <h1>Game Over</h1>
+        <TypingResult
+          accuracy={accuracy}
+          grossSpeed={grossSpeed}
+          netSpeed={netSpeed}
+          wrongWords={wrongWords}
+          wordsList={typedWords}
+        />
       ) : (
         <TypingArea
+          key={gameId}
           words={generatedWords}
           gameOver={onGameOver}
           timeConstraint={timeConstraint}

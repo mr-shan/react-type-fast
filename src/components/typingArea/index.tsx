@@ -2,8 +2,6 @@
 import React from 'react';
 import { flushSync } from 'react-dom';
 
-import useInterval from '../hooks/useInterval';
-
 import styles from './style.module.css';
 
 import Word from './word';
@@ -33,7 +31,6 @@ const TypingArea = (props: IProps) => {
   const [wordList, setWordList] = React.useState<Array<TypingWord>>([]);
   const [currentWordIndex, setCurrentWordIndex] = React.useState(0);
   const [currentCharIndex, setCurrentCharIndex] = React.useState(0);
-  const [totalCharacters, setTotalCharacters] = React.useState(0);
   const [totalCharTyped, setTotalCharTyped] = React.useState(0);
   const [grossSpeed, setGrossSpeed] = React.useState<number>(0);
   const [startTime, setStartTime] = React.useState<number>(0);
@@ -61,6 +58,9 @@ const TypingArea = (props: IProps) => {
 
   const keyPressHandler = (event: React.KeyboardEvent<HTMLElement>) => {
     if (KeysToAvoid.includes(event.key) || isGameOver) return;
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+
+    if (currentCharIndex === 0 && event.key === ' ') return;
 
     if (
       currentCharIndex === 0 &&
@@ -68,7 +68,7 @@ const TypingArea = (props: IProps) => {
       startTime === 0 &&
       !isGameOver
     ) {
-      setStartTime(performance.now());
+      setStartTime(Date.now());
       if (props.timeConstraint === 'time') {
         flushSync(() => setLimitLeft(props.constraintLimit));
         const interval = setInterval(() => {
@@ -81,13 +81,22 @@ const TypingArea = (props: IProps) => {
             return newLimit;
           });
         }, 1000);
+        window.typeTestIntervalRef = interval
+        flushSync(() => setIntervalRef((oldVal) => {
+          clearInterval(oldVal)
+          return interval
+        }));
       } else {
-        flushSync(() => setTimer(0))
+        flushSync(() => setTimer(0));
         const interval = setInterval(() => {
-          console.log("Inside timer")
-          setTimer(oldTime => oldTime + 1)
-        }, 1000)
-        flushSync(() => setIntervalRef(interval))
+          console.log('Inside timer');
+          setTimer((oldTime) => oldTime + 1);
+        }, 1000);
+        flushSync(() => setIntervalRef((oldVal) => {
+          clearInterval(oldVal)
+          return interval
+        }));
+        window.typeTestIntervalRef = interval
       }
     }
 
@@ -96,18 +105,17 @@ const TypingArea = (props: IProps) => {
       // space key press handler
       case ' ':
         event.preventDefault();
-        if (currentWordIndex === wordList.length - 1) {
-          handleGameOver();
-          return;
-        }
         flushSync(() => {
           // handle the condition where a word is not completely typed but space
           // is pressed resulting skipping few character in current word
           // and jumping over to next word.
-          wordList[currentWordIndex].endTime = performance.now();
+          if (isNaN(wordList[currentWordIndex].startTime))
+            wordList[currentWordIndex].startTime = Date.now();
+          wordList[currentWordIndex].endTime = Date.now();
           const curLen = wordList[currentWordIndex].typed.length;
           const ogLen = wordList[currentWordIndex].original.length;
           if (curLen < ogLen) {
+            console.log(ogLen, curLen);
             const wordsCopy = [...wordList];
             const charsToAdd = ogLen - curLen;
             for (let i = 0; i < charsToAdd; i++)
@@ -145,9 +153,11 @@ const TypingArea = (props: IProps) => {
       default:
         flushSync(() => {
           const wordsCopy = [...wordList];
+          const currentTime = Date.now();
           if (currentCharIndex === 0) {
-            wordsCopy[currentWordIndex].startTime = performance.now();
+            wordsCopy[currentWordIndex].startTime = currentTime;
           }
+          wordsCopy[currentWordIndex].endTime = currentTime;
           wordsCopy[currentWordIndex].typed += key;
           setWordScore(wordsCopy[currentWordIndex]);
           setWordList(wordsCopy);
@@ -160,13 +170,16 @@ const TypingArea = (props: IProps) => {
         }
         break;
     }
+    if (currentWordIndex === wordList.length - 1) {
+      handleGameOver();
+      return;
+    }
   };
 
   const calculateSpeed = () => {
     if (totalCharTyped < 2) return;
 
-    const gross =
-      totalCharTyped / 5 / ((performance.now() - startTime) / 1000 / 60);
+    const gross = totalCharTyped / 5 / ((Date.now() - startTime) / 1000 / 60);
     setGrossSpeed(Math.round(gross));
   };
 
@@ -175,11 +188,13 @@ const TypingArea = (props: IProps) => {
     setWordList([]);
     setCurrentWordIndex(0);
     setCurrentCharIndex(0);
-    setTotalCharacters(0);
     setTotalCharTyped(0);
     setGrossSpeed(0);
     setStartTime(0);
-    setIntervalRef(0);
+    setIntervalRef((oldVal) => {
+      clearInterval(oldVal)
+      return 0
+    });
     setLimitLeft(0);
   };
 
@@ -191,9 +206,7 @@ const TypingArea = (props: IProps) => {
 
   React.useEffect(() => {
     resetAll();
-    let numberOfCharacters = 0;
     const wd: TypingWord[] = props.words.map((word: string, index: number) => {
-      numberOfCharacters += word.length;
       return {
         index: index + word,
         original: word,
@@ -203,7 +216,6 @@ const TypingArea = (props: IProps) => {
         endTime: NaN,
       };
     });
-    setTotalCharacters(numberOfCharacters);
     setWordList(wd);
     setLimitLeft(props.constraintLimit);
     typingAreaRef.current?.focus();
