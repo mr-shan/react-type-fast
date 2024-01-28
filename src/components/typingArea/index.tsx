@@ -55,7 +55,7 @@ const TypingArea = (props: IProps) => {
     }
     wordInProcess.wrongChars = incorrectChars;
   };
-
+  
   const keyPressHandler = (event: React.KeyboardEvent<HTMLElement>) => {
     if (KeysToAvoid.includes(event.key) || isGameOver) return;
     if (event.altKey || event.ctrlKey || event.metaKey) return;
@@ -80,6 +80,7 @@ const TypingArea = (props: IProps) => {
             return newLimit;
           });
         }, 1000);
+        // @ts-expect-error the interval is added on window object. Later should be moved to context API
         window.typeTestIntervalRef = interval
         flushSync(() => setIntervalRef((oldVal) => {
           clearInterval(oldVal)
@@ -94,6 +95,7 @@ const TypingArea = (props: IProps) => {
           clearInterval(oldVal)
           return interval
         }));
+        // @ts-expect-error the interval is added on window object. Later should be moved to context API
         window.typeTestIntervalRef = interval
       }
     }
@@ -161,15 +163,11 @@ const TypingArea = (props: IProps) => {
           setCurrentCharIndex((oldIndex) => oldIndex + 1);
           setTotalCharTyped((oldChars) => oldChars + 1);
         });
-        if (currentWordIndex === wordList.length - 1) {
-          const lastWord = wordList[wordList.length - 1];
-          if (lastWord.typed === lastWord.original) handleGameOver();
-        }
         break;
     }
     if (currentWordIndex === wordList.length - 1) {
-      handleGameOver();
-      return;
+      const lastWord = wordList[wordList.length - 1];
+      if (lastWord.typed === lastWord.original) handleGameOver();
     }
   };
 

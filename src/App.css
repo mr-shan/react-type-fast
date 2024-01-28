@@ -1,6 +1,6 @@
 .refreshWrapper {
   margin: auto;
-  margin-top: 10%;
+  margin-top: var(--component-margin);
   left: 0;
   right: 0;
   width: 100%;

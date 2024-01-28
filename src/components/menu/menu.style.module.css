@@ -8,7 +8,7 @@
   width: fit-content;
   gap: 1.25rem;
   margin: auto;
-  margin-top: 10%;
+  margin-top: var(--component-margin);
 }
 
 .menuButton {

@@ -1,0 +1,14 @@
+.container {
+  border: solid 1px var(--text-1);
+  padding: 2rem;
+  color: var(--text-1);
+  background: var(--bg-2);
+  border-radius: 20px;
+}
+
+.container h3 {
+  text-align: center;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+}

@@ -2,6 +2,7 @@
   border: solid 1px var(--bg-2);
   border-radius: var(--border-radius);
   overflow: hidden;
+  margin: 1.5rem;
 }
 .nav {
   display: flex;

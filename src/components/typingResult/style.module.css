@@ -9,7 +9,7 @@
   background-color: var(--bg-1);
   margin: auto;
   margin-top: auto;
-  margin-top: 10%;
+  margin-top: var(--component-margin);
   padding: 3rem 1.5rem;
   font-size: 1.5rem;
   color: var(--text-1);

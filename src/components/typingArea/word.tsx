@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react';
+import { memo } from 'react';
 
 import styles from './word.module.css';
 import { TypingWord } from '../../types';

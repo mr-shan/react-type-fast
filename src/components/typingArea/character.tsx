@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import styles from './word.module.css';
 import TypingIndicator from './typingIndicator';
 
@@ -9,8 +8,9 @@ interface IPropsChar {
   isExcess: boolean;
 }
 
-const CharacterOg = (props: IPropsChar) => {
+const Character = (props: IPropsChar) => {
   const classes = [];
+
   if (props.isExcess) {
     classes.push(styles.wrongChar);
   } else if (props.typedChar !== undefined) {
@@ -26,8 +26,4 @@ const CharacterOg = (props: IPropsChar) => {
   );
 };
 
-const Character = memo(
-  CharacterOg,
-  (oldProps, nextProps) => oldProps.showIndicator === nextProps.showIndicator
-);
 export default Character;

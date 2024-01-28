@@ -11,6 +11,7 @@ import './App.css';
 
 import { timeConstraint, TypingWord } from './types';
 import { TIME_OPTIONS, WORDS_OPTIONS, COMMON_WORDS } from './types/constants';
+import { getTypingSpeed } from './helper/helper';
 
 function App() {
   const [timeConstraint, setTimeConstraint] =
@@ -46,13 +47,10 @@ function App() {
       totalTypedWords++;
       totalTypedChars += word.typed.length;
       if (word.endTime === word.startTime) {
-        // this is skipped condition.
-        word.speed = constraintLimit;
+        // this is the condition when a word is skipped.
+        word.speed = 0;
       } else {
-        word.speed =
-        word.original.length /
-        5 /
-        ((word.endTime - word.startTime) / 1000 / 60);
+        word.speed = getTypingSpeed(word.startTime, word.endTime, word.original.length, word.wrongChars)
       }
       if (word.speed > maxSpeedWord) maxSpeedWord = word.speed
       if (word.wrongChars > 0) wrongWords++;
@@ -98,6 +96,7 @@ function App() {
     setAccuracy(0);
     setTypedWords([]);
     setMaxSpeed(0);
+    // @ts-expect-error the interval is added on window object. Later should be moved to context API
     for(let i = 0; i <= window.typeTestIntervalRef; i++) {
       clearInterval(i)
     }
@@ -146,7 +145,7 @@ function App() {
         />
       )}
       <div className='refreshWrapper'>
-        <button onClick={refreshWordsHandler}>
+        <button onClick={refreshWordsHandler} name='Refresh' title='Refresh'>
           <RefreshIcon width={36} height={36} />
         </button>
       </div>

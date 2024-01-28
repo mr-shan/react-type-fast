@@ -5,7 +5,7 @@
   max-width: 60rem;
   background-color: var(--bg-1);
   margin: auto;
-  margin-top: 10%;
+  margin-top: var(--component-margin);
   padding: 2rem 2.5rem;
   font-size: 1.5rem;
   color: var(--text-1);
@@ -14,6 +14,9 @@
   transition: all 0.25s ease-out;
   height: 10.5rem;
   animation: expand 0.5s ease-in-out forwards;
+  left: 0;
+  right: 0;
+  width: 80%;
 }
 
 .container:focus {

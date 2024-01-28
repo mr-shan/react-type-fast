@@ -11,6 +11,7 @@
 
   --border-radius: 1.25rem;
   --h1: 36px;
+  --component-margin: 8%;
 }
 
 [data-theme="dark"] {
@@ -27,4 +28,11 @@
 
   --border-radius: 1.25rem;
   --h1: 36px;
+  --component-margin: 8%;
+}
+
+@media screen and (max-width: 48rem) {
+  :root {
+    --component-margin: 5rem;
+  }
 }
