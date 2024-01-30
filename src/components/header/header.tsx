@@ -9,7 +9,7 @@ import SettingIcon from '../icons/settingIcon';
 
 import Modals from './modals';
 
-const Header = () => {
+const HeaderOg = () => {
   const [infoVisible, setInfoVisible] = React.useState(false);
   const [settingsVisible, setSettingsVisible] = React.useState(false);
   const [leaderBoardVisible, setLeaderBoardVisible] = React.useState(false);
@@ -81,5 +81,7 @@ const Header = () => {
     </header>
   );
 };
+
+const Header = React.memo(HeaderOg, () => true)
 
 export default Header;

@@ -10,7 +10,7 @@ import './assets/colors.css';
 import './App.css';
 
 import { timeConstraint, TypingWord } from './types';
-import { TIME_OPTIONS, WORDS_OPTIONS, COMMON_WORDS } from './types/constants';
+import { TIME_OPTIONS, WORDS_OPTIONS, COMMON_WORDS, LOCAL_STORAGE_RESULTS_KEY } from './types/constants';
 import { getTypingSpeed } from './helper/helper';
 
 function App() {
@@ -36,6 +36,7 @@ function App() {
   };
 
   const onGameOver = (wordList: TypingWord[]) => {
+    if (isGameOver) return;
     const totalTypedWordList: TypingWord[]= []
     let wrongWords = 0,
       grossSpeed = 0,
@@ -62,13 +63,22 @@ function App() {
     else 
       grossSpeed = Math.round(grossSpeed / totalTypedWords);
     const netWpm = Math.round(grossSpeed - wrongWords);
+    const acc = Math.round((netWpm / grossSpeed) * 100)
     setGrossSpeed(grossSpeed);
     setNetSpeed(netWpm);
-    setAccuracy(Math.round((netWpm / grossSpeed) * 100));
+    setAccuracy(acc);
     setWrongWords(wrongWords);
     setIsGameOver(true);
     setTypedWords(totalTypedWordList)
     setMaxSpeed(Math.round(maxSpeedWord))
+    saveScore({
+      timeConstraint,
+      constraintLimit,
+      acc,
+      grossSpeed,
+      netWpm,
+      wrongWords,
+    })
   };
 
   const generateRandomWords = (numberOfWordsNeeded: number) => {
@@ -108,6 +118,31 @@ function App() {
     generateRandomWords(numberOfWordsNeeded);
     setIsGameOver(false);
   };
+
+  const saveScore = (scoreObj: any) => {
+    const oldDataStr = localStorage.getItem(LOCAL_STORAGE_RESULTS_KEY)
+    let oldData = []
+    if (oldDataStr) {
+      try {
+        const data = JSON.parse(oldDataStr);
+        if (Array.isArray(data)) {
+          oldData = data;
+        }
+      } catch (error) {
+        console.error('data mismatch', error)
+      }
+    }
+    oldData.push({
+      id: new Date().toISOString(),
+      constraintType: scoreObj.timeConstraint,
+      constraintLimit: scoreObj.constraintLimit,
+      accuracy: scoreObj.acc,
+      grossSpeed: scoreObj.grossSpeed,
+      netSpeed: scoreObj.netWpm,
+      wrongWords: scoreObj.wrongWords,
+    })
+    localStorage.setItem(LOCAL_STORAGE_RESULTS_KEY, JSON.stringify(oldData));
+  }
 
   React.useEffect(() => {
     const numberOfWordsNeeded =

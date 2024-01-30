@@ -1,6 +1,8 @@
 export const TIME_OPTIONS = [15, 30, 60, 120];
 export const WORDS_OPTIONS = [10, 25, 50, 100];
 
+export const LOCAL_STORAGE_RESULTS_KEY = 'typing-score-history'
+
 export const RANDOM_WORDS = [
   'the',
   'of',

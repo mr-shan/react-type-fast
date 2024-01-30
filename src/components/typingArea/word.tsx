@@ -32,9 +32,11 @@ const WordOg = (props: IProps) => {
   if (props.isActive) {
     const el = document.getElementById(id)
     const offsetTop = el?.offsetTop
+    // @ts-expect-error the offset top does exist on the parent node.
     const parentOffsetTop = el?.parentNode?.offsetTop
     if (offsetTop && parentOffsetTop) {
       if (offsetTop > parentOffsetTop + 60) {
+        // @ts-expect-error the offset top does exist on the parent node.
         el.parentNode.scrollTo(0, offsetTop - (parentOffsetTop + el.offsetHeight))
       }
     }

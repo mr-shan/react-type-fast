@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
@@ -9,6 +9,20 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      let themeSet = '';
+      const theme = localStorage.getItem('theme');
+      if (theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+      } else {
+        const darkThemeMq = window.matchMedia('(prefers-color-scheme: dark)');
+        if (darkThemeMq.matches) {
+          localStorage.setItem('theme', 'dark');
+        } else {
+          localStorage.setItem('theme', 'light');
+        }
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

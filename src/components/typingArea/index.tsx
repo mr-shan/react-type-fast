@@ -41,6 +41,7 @@ const TypingArea = (props: IProps) => {
   const typingAreaRef = React.useRef<HTMLDivElement>(null);
 
   const handleGameOver = (interval: number = 0) => {
+    if (isGameOver) return;
     clearInterval(interval);
     props.gameOver(wordList);
     resetAll();
@@ -73,11 +74,7 @@ const TypingArea = (props: IProps) => {
         flushSync(() => setLimitLeft(props.constraintLimit));
         const interval = setInterval(() => {
           setLimitLeft((oldLimit) => {
-            const newLimit = oldLimit - 1;
-            if (newLimit === 0) {
-              setTimeout(() => handleGameOver(interval), 0);
-            }
-            return newLimit;
+            return oldLimit - 1;
           });
         }, 1000);
         // @ts-expect-error the interval is added on window object. Later should be moved to context API
@@ -196,6 +193,9 @@ const TypingArea = (props: IProps) => {
   React.useEffect(() => {
     if (!isGameOver && startTime) {
       calculateSpeed();
+      if (limitLeft === 0) {
+        handleGameOver();
+      }
     }
   }, [limitLeft, timer]);
 

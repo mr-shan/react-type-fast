@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { TypingWord } from '../../types';
 import styles from './style.module.css';
 
@@ -34,6 +32,7 @@ const TypingResult = (props: IProps) => {
           </span>
           {xAxis.map((item) => (
             <span
+              key={item}
               className={styles.xAxisItem}
               style={{ left: `${(item / xAxis.length) * 100}%` }}
             >
@@ -42,6 +41,7 @@ const TypingResult = (props: IProps) => {
           ))}
           {yAxis.map((item, index) => (
             <span
+              key={item}
               className={styles.yAxisItem}
               style={{ bottom: `${(index / (yAxis.length - 1)) * 100}%` }}
             >
@@ -50,9 +50,11 @@ const TypingResult = (props: IProps) => {
           ))}
           {props.wordsList?.map((item: TypingWord, index: number) => (
             <span
+              key={item.index}
               className={styles.chartItem}
               style={{
                 left: `${((index + 1) / props.wordsList?.length) * 100}%`,
+                // @ts-expect-error Typing speed can not be undefined.
                 bottom: `${(item.speed / props.maxSpeed) * 100}%`,
                 background: item.wrongChars ? 'var(--error)' : ''
               }}
