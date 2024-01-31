@@ -39,6 +39,7 @@ const TypingArea = (props: IProps) => {
   const [limitLeft, setLimitLeft] = React.useState<number>(0);
   const [timer, setTimer] = React.useState(0);
   const typingAreaRef = React.useRef<HTMLDivElement>(null);
+  const typingInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleGameOver = (interval: number = 0) => {
     if (isGameOver) return;
@@ -56,7 +57,7 @@ const TypingArea = (props: IProps) => {
     }
     wordInProcess.wrongChars = incorrectChars;
   };
-  
+
   const keyPressHandler = (event: React.KeyboardEvent<HTMLElement>) => {
     if (KeysToAvoid.includes(event.key) || isGameOver) return;
     if (event.altKey || event.ctrlKey || event.metaKey) return;
@@ -78,22 +79,26 @@ const TypingArea = (props: IProps) => {
           });
         }, 1000);
         // @ts-expect-error the interval is added on window object. Later should be moved to context API
-        window.typeTestIntervalRef = interval
-        flushSync(() => setIntervalRef((oldVal) => {
-          clearInterval(oldVal)
-          return interval
-        }));
+        window.typeTestIntervalRef = interval;
+        flushSync(() =>
+          setIntervalRef((oldVal) => {
+            clearInterval(oldVal);
+            return interval;
+          })
+        );
       } else {
         flushSync(() => setTimer(0));
         const interval = setInterval(() => {
           setTimer((oldTime) => oldTime + 1);
         }, 1000);
-        flushSync(() => setIntervalRef((oldVal) => {
-          clearInterval(oldVal)
-          return interval
-        }));
+        flushSync(() =>
+          setIntervalRef((oldVal) => {
+            clearInterval(oldVal);
+            return interval;
+          })
+        );
         // @ts-expect-error the interval is added on window object. Later should be moved to context API
-        window.typeTestIntervalRef = interval
+        window.typeTestIntervalRef = interval;
       }
     }
 
@@ -148,10 +153,10 @@ const TypingArea = (props: IProps) => {
           });
           setTimeout(() => {
             if (props.timeConstraint === 'words')
-            setLimitLeft(() => {
-              return wordList.length - currentWordIndex;
-            });
-          }, 10)
+              setLimitLeft(() => {
+                return wordList.length - currentWordIndex;
+              });
+          }, 10);
         }
         break;
       default:
@@ -192,8 +197,8 @@ const TypingArea = (props: IProps) => {
     setGrossSpeed(0);
     setStartTime(0);
     setIntervalRef((oldVal) => {
-      clearInterval(oldVal)
-      return 0
+      clearInterval(oldVal);
+      return 0;
     });
     setLimitLeft(0);
   };
@@ -221,7 +226,7 @@ const TypingArea = (props: IProps) => {
     });
     setWordList(wd);
     setLimitLeft(props.constraintLimit);
-    typingAreaRef.current?.focus();
+    typingInputRef.current?.focus();
   }, [props.words]);
 
   return (
@@ -230,7 +235,17 @@ const TypingArea = (props: IProps) => {
       className={styles.container}
       tabIndex={0}
       onKeyDown={keyPressHandler}
+      onFocus={() => typingInputRef.current?.focus()}
     >
+      <input
+        id='type-fast-typing-area-input-ref'
+        ref={typingInputRef}
+        autoComplete='off'
+        autoCorrect='off'
+        autoCapitalize='off'
+        spellCheck={false}
+        className={styles['type-fast-typing-area-input-ref']}
+      />
       <div className={styles.typingStatsWrapper}>
         <span>{limitLeft}</span>
         <span>{grossSpeed}</span>

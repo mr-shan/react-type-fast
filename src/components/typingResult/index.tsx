@@ -66,7 +66,7 @@ const TypingResult = (props: IProps) => {
       <div className={styles.stats}>
         <div className={styles.statItem}>
           <div className={styles.statsScore}>{props.grossSpeed}</div>
-          <div className={styles.statsTitle}>Gross Speed</div>
+          <div className={styles.statsTitle}>Raw Speed</div>
         </div>
         <div className={styles.statItem}>
           <div className={styles.statsScore}>{props.netSpeed}</div>
@@ -74,7 +74,7 @@ const TypingResult = (props: IProps) => {
         </div>
         <div className={styles.statItem}>
           <div className={styles.statsScore}>{props.wrongWords}</div>
-          <div className={styles.statsTitle}>Wrong Words</div>
+          <div className={styles.statsTitle}>Mistakes</div>
         </div>
         <div className={styles.statItem}>
           <div className={styles.statsScore}>{props.accuracy}%</div>

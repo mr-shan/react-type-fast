@@ -28,6 +28,9 @@
   bottom: 0;
   margin: auto;
   animation: pop-in 0.25s ease-out forwards;
+  display: flex;
+  justify-self: center;
+  align-items: center;
 }
 
 @keyframes pop-in {
@@ -47,5 +50,17 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@media screen and (max-width: 48rem) {
+  .body {
+    width: 95%;
+  }
+}
+
+@media screen and (max-width: 24rem) {
+  .body {
+    width: 90%;
   }
 }
