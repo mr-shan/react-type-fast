@@ -34,5 +34,12 @@
 @media screen and (max-width: 48rem) {
   :root {
     --component-margin: 5rem;
+    --h1: 24px;
+  }
+}
+@media screen and (max-width: 24rem) {
+  :root {
+    --component-margin: 3rem;
+    --h1: 20px;
   }
 }

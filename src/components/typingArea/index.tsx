@@ -123,7 +123,9 @@ const TypingArea = (props: IProps) => {
           setCurrentWordIndex((oldIndex) => oldIndex + 1);
         });
         if (props.timeConstraint === 'words')
-          setLimitLeft((oldIndex) => oldIndex - 1);
+          setLimitLeft(() => {
+            return wordList.length - 1 - currentWordIndex;
+          });
         break;
       // backspace key press handler
       case 'Backspace':
@@ -144,6 +146,12 @@ const TypingArea = (props: IProps) => {
             setCurrentCharIndex((oldIndex) => oldIndex - 1);
             setTotalCharTyped((oldChars) => oldChars - 1);
           });
+          setTimeout(() => {
+            if (props.timeConstraint === 'words')
+            setLimitLeft(() => {
+              return wordList.length - currentWordIndex;
+            });
+          }, 10)
         }
         break;
       default:

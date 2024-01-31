@@ -62,3 +62,20 @@
 .navBtn:hover {
   color: var(--accent);
 }
+
+@media screen and (max-width: 48rem) {
+  .header {
+    margin: 0.5rem 0.25rem;
+  }
+  .logoWrapper {
+    padding: 0 0.5rem;
+  }
+  .navButtonsList {
+    gap: 1rem;
+    padding-right: 1rem;
+  }
+  .navBtn svg {
+    width: 20px;
+    height: 20px;
+  }
+}

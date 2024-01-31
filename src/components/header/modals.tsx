@@ -13,30 +13,37 @@ interface IProps {
 }
 
 const ModalsOg = (props: IProps) => {
-  const [theme, setTheme] = useState('dark')
+  const [theme, setTheme] = useState('dark');
   const oldResultStr = localStorage.getItem(LOCAL_STORAGE_RESULTS_KEY);
   let results = [];
   if (oldResultStr) {
-    results = JSON.parse(oldResultStr);
+    results = JSON.parse(oldResultStr).sort((a, b) => {
+      const date1 = new Date(a.id);
+      const date2 = new Date(b.id);
+      return date2 - date1;
+    });
   }
 
   const themeChangeHandler = (event: any) => {
     const theme = event.target.value;
     localStorage.setItem('theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
-    setTheme(theme)
-  }
+    setTheme(theme);
+  };
 
   useEffect(() => {
-    const themeValue = document.documentElement.getAttribute('data-theme')
-    setTheme(themeValue || 'dark')
-  }, [])
+    const themeValue = document.documentElement.getAttribute('data-theme');
+    setTheme(themeValue || 'dark');
+  }, []);
 
   return (
     <>
       <Modal isOpen={props.infoModal} onClose={() => props.onClose('info')}>
         <div className={styles.container}>
-          <h3>About this app...</h3>
+          <div className={styles.modalHeader}>
+            <h3>About this app...</h3>
+            <button onClick={() => props.onClose('info')}>&#10005;</button>
+          </div>
           <p>
             This is the simple typing test application where you can test your
             typing speed in words per minutes along with accuracy of your typing
@@ -54,13 +61,31 @@ const ModalsOg = (props: IProps) => {
       </Modal>
       <Modal isOpen={props.settings} onClose={() => props.onClose('settings')}>
         <div className={styles.container}>
-          <h3>Settings</h3>
+          <div className={styles.modalHeader}>
+            <h3>Settings</h3>
+            <button onClick={() => props.onClose('settings')}>&#10005;</button>
+          </div>
           <div className={styles.settingsContainer}>
             <div className={styles.settingItem}>
               <span>Theme</span>
               <select onChange={themeChangeHandler} value={theme}>
-                <option title='dark' value='dark'>Dark</option>
-                <option title='light' value='light'>Light</option>
+                <option title='dark' value='dark'>
+                  Dark
+                </option>
+                <option title='light' value='light'>
+                  Light
+                </option>
+              </select>
+            </div>
+            <div className={styles.settingItem}>
+              <span>Difficulty Level</span>
+              <select value={theme}>
+                <option title='dark' value='dark'>
+                  Easy
+                </option>
+                <option title='light' value='light'>
+                  Difficult
+                </option>
               </select>
             </div>
           </div>
@@ -71,14 +96,19 @@ const ModalsOg = (props: IProps) => {
         onClose={() => props.onClose('leaderBoard')}
       >
         <div className={styles.container}>
-          <h3>Leader Board</h3>
+          <div className={styles.modalHeader}>
+            <h3>Leader Board</h3>
+            <button onClick={() => props.onClose('leaderBoard')}>
+              &#10005;
+            </button>
+          </div>
           {results.length === 0 ? (
             <p>No previous typing results found.</p>
           ) : (
             <div className={styles.leaderBoardResults}>
               {results.map((result: any) => (
                 <p className={styles.leaderBoardResult} key={result.id}>
-                  <span className={styles.leaderBoardResultItem}>
+                  <span className={styles.leaderBoardResultItem} style={{minWidth: '4.5rem'}}>
                     <span className={styles.leaderBoardResultItemTitle}>
                       Type
                     </span>
@@ -100,7 +130,7 @@ const ModalsOg = (props: IProps) => {
                       Speed (Gross/Net)
                     </span>
                     <span className={styles.leaderBoardResultItemResult}>
-                      {result.grossSpeed } / { result.netSpeed}
+                      {result.grossSpeed} / {result.netSpeed}
                     </span>
                   </span>
                   <span className={styles.leaderBoardResultItem}>

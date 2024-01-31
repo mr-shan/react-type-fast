@@ -14,9 +14,7 @@
   transition: all 0.25s ease-out;
   height: 10.5rem;
   animation: expand 0.5s ease-in-out forwards;
-  left: 0;
-  right: 0;
-  width: 80%;
+  width: 85%;
 }
 
 .container:focus {
@@ -42,8 +40,8 @@
   align-items: center;
   backdrop-filter: blur(0.4rem);
   -webkit-backdrop-filter: blur(0.4rem);
-  transition: all 0.25s ease-out;
   opacity: 0;
+  transition: all 0.25s ease-out;
   animation: fade-in 0.5s ease-out 0.75s forwards;
 }
 
@@ -77,6 +75,36 @@
   padding: 0.25rem 1rem;
   font-size: 1.25rem;
   color: var(--accent);
+}
+
+@media screen and (max-width: 48rem) {
+  .container {
+    width: 75%;
+    font-size: 1.25rem;
+    padding: 1.25rem 1.75rem;
+    height: 8.75rem;
+  }
+  .container:not(.container:focus)::before {
+    font-size: 1rem;
+  }
+  .typingIndicator {
+    height: 1.5rem;
+  }
+  .words {
+    height: 8.75rem;
+  }
+}
+
+@media screen and (max-width: 24rem) {
+  .typingStatsWrapper {
+    font-size: 1rem;
+    padding: 1rem 2rem;
+  }
+  .container {
+    margin-top: 3rem;
+    width: 70%;
+    padding: 1rem 1.5rem;
+  }
 }
 
 @keyframes typing-indicator {
