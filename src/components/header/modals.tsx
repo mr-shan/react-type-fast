@@ -1,9 +1,12 @@
-import { memo, useState, useEffect } from 'react';
+import { memo, useEffect } from 'react';
+
+import { setTheme, setDifficulty } from '../../store/features/appSettingReducer';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+
 import Modal from '../modal/Modal';
 
-import { LOCAL_STORAGE_RESULTS_KEY } from '../../types/constants';
-
 import styles from './modals.style.module.css';
+import { TypingResult } from '../../types';
 
 interface IProps {
   infoModal: boolean;
@@ -13,27 +16,29 @@ interface IProps {
 }
 
 const ModalsOg = (props: IProps) => {
-  const [theme, setTheme] = useState('dark');
-  const oldResultStr = localStorage.getItem(LOCAL_STORAGE_RESULTS_KEY);
-  let results = [];
-  if (oldResultStr) {
-    results = JSON.parse(oldResultStr).sort((a, b) => {
-      const date1 = new Date(a.id);
-      const date2 = new Date(b.id);
-      return date2 - date1;
-    });
-  }
+  const dispatch = useAppDispatch()
+  const theme = useAppSelector(state => state.appSetting.theme);
+  const difficulty = useAppSelector(state => state.appSetting.difficulty)
+  const typingResults = useAppSelector(state => state.typingResults.typingResults)
+
+  const results = [...typingResults];
+  results.sort((a: TypingResult, b: TypingResult) => new Date(b.id) - new Date(a.id))
 
   const themeChangeHandler = (event: any) => {
-    const theme = event.target.value;
-    localStorage.setItem('theme', theme);
-    document.documentElement.setAttribute('data-theme', theme);
-    setTheme(theme);
+    const changedValue = event.target.value;
+    localStorage.setItem('theme', changedValue);
+    document.documentElement.setAttribute('data-theme', changedValue);
+    dispatch(setTheme(changedValue));
+  };
+
+  const difficultyChangeHandler = (event: any) => {
+    const changedValue = event.target.value;
+    dispatch(setDifficulty(changedValue))
   };
 
   useEffect(() => {
     const themeValue = document.documentElement.getAttribute('data-theme');
-    setTheme(themeValue || 'dark');
+    dispatch(setTheme(themeValue || 'dark'));
   }, []);
 
   return (
@@ -79,7 +84,7 @@ const ModalsOg = (props: IProps) => {
             </div>
             <div className={styles.settingItem}>
               <span>Difficulty Level</span>
-              <select value={theme}>
+              <select onChange={difficultyChangeHandler} value={difficulty}>
                 <option title='dark' value='dark'>
                   Easy
                 </option>
@@ -103,7 +108,7 @@ const ModalsOg = (props: IProps) => {
             </button>
           </div>
           {results.length === 0 ? (
-            <p>No previous typing results found.</p>
+            <p style={{textAlign: 'center'}}>No previous typing results found.</p>
           ) : (
             <div className={styles.leaderBoardResults}>
               {results.map((result: any) => (
@@ -114,7 +119,7 @@ const ModalsOg = (props: IProps) => {
                     </span>
                     <span className={styles.leaderBoardResultItemResult}>
                       {result.constraintLimit}{' '}
-                      {result.constraintType === 'time' ? 'Sec' : 'Words'}{' '}
+                      {result.constraint === 'time' ? 'Sec' : 'Words'}{' '}
                     </span>
                   </span>
                   <span className={styles.leaderBoardResultItem}>

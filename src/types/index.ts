@@ -1,4 +1,5 @@
-export type timeConstraint = 'time' | 'words'
+export type timeConstraint = 'time' | 'words';
+export type difficulty = 'easy' | 'hard'
 
 export interface IconProps {
   height?: number;
@@ -8,11 +9,21 @@ export interface IconProps {
 }
 
 export interface TypingWord {
-  index: number | string
-  original: string
-  typed: string
-  wrongChars: number
-  startTime: number
-  endTime: number
-  speed?: number
+  index: number | string;
+  original: string;
+  typed: string;
+  wrongChars: number;
+  startTime: number;
+  endTime: number;
+  speed?: number;
+}
+
+export interface TypingResult {
+  id: string;
+  constraint: timeConstraint;
+  constraintLimit: number;
+  accuracy: number;
+  grossSpeed: number;
+  netSpeed: number;
+  wrongWords: number;
 }
