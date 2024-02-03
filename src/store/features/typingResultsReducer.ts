@@ -6,11 +6,13 @@ import { LOCAL_STORAGE_RESULTS_KEY } from '../../types/constants';
 // Define a type for the slice state
 interface TypingResultState {
   typingResults: TypingResult[];
+  mostRecentResult: TypingResult | null;
 }
 
 // Define the initial state using that type
 const initialState: TypingResultState = {
   typingResults: [],
+  mostRecentResult: null,
 };
 
 export const appSettingSlice = createSlice({
@@ -18,15 +20,15 @@ export const appSettingSlice = createSlice({
   initialState,
   reducers: {
     initializeState: (state: TypingResultState) => {
-      const str = localStorage.getItem(LOCAL_STORAGE_RESULTS_KEY)
+      const str = localStorage.getItem(LOCAL_STORAGE_RESULTS_KEY);
       if (!str) return;
       try {
         const oldData = JSON.parse(str);
         if (oldData && Array.isArray(oldData)) {
-          state.typingResults = oldData
+          state.typingResults = oldData;
         }
       } catch (error) {
-        console.error("Old typing result parsing error from local storage.")
+        console.error('Old typing result parsing error from local storage.');
       }
     },
     addResult: (
@@ -35,12 +37,18 @@ export const appSettingSlice = createSlice({
     ) => {
       const results = [...state.typingResults, action.payload];
       state.typingResults = results;
-      localStorage.setItem(LOCAL_STORAGE_RESULTS_KEY, JSON.stringify(results))
+      localStorage.setItem(LOCAL_STORAGE_RESULTS_KEY, JSON.stringify(results));
+    },
+    setMostRecentResult: (
+      state: TypingResultState,
+      action: PayloadAction<TypingResult>
+    ) => {
+      state.mostRecentResult = action.payload;
     },
   },
 });
 
-export const { addResult, initializeState } = appSettingSlice.actions;
+export const { addResult, initializeState, setMostRecentResult } = appSettingSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.appSetting.theme

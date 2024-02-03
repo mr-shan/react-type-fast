@@ -3,6 +3,19 @@ export const WORDS_OPTIONS = [10, 25, 50, 100];
 
 export const LOCAL_STORAGE_RESULTS_KEY = 'typing-score-history'
 
+export const KEYS_TO_AVOID = [
+  'Tab',
+  'Enter',
+  'Meta',
+  'Control',
+  'Alt',
+  'ArrowRight',
+  'ArrowLeft',
+  'ArrowUp',
+  'ArrowDown',
+  'Shift',
+];
+
 export const RANDOM_WORDS = [
   'the',
   'of',

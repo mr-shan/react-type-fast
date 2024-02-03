@@ -2,11 +2,13 @@ import { configureStore } from '@reduxjs/toolkit'
 
 import appSettingReducer from './features/appSettingReducer'
 import typingResultsReducer from './features/typingResultsReducer'
+import typingProgressReducer from './features/typingProgressReducer'
 
 const store = configureStore({
   reducer: {
     appSetting: appSettingReducer,
-    typingResults: typingResultsReducer
+    typingResults: typingResultsReducer,
+    typingProgress: typingProgressReducer
   }
 })
 

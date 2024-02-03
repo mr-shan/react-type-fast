@@ -7,7 +7,11 @@ import RefreshIcon from './components/icons/refreshIcon';
 import TypingResult from './components/typingResult';
 
 import { useAppSelector, useAppDispatch } from './store/hooks';
-import { addResult, initializeState } from './store/features/typingResultsReducer';
+import {
+  addResult,
+  initializeState,
+  setMostRecentResult,
+} from './store/features/typingResultsReducer';
 
 import './assets/colors.css';
 import './App.css';
@@ -22,29 +26,23 @@ function App() {
   const constraintLimit = useAppSelector(
     (state) => state.appSetting.constraintLimit
   );
-  const difficulty = useAppSelector(state => state.appSetting.difficulty)
+  const difficulty = useAppSelector((state) => state.appSetting.difficulty);
 
   const [isGameOver, setIsGameOver] = React.useState(false);
   const [generatedWords, setGeneratedWords] = React.useState<Array<string>>([]);
-  const [wrongWords, setWrongWords] = React.useState(0);
-  const [grossSpeed, setGrossSpeed] = React.useState(0);
-  const [netSpeed, setNetSpeed] = React.useState(0);
-  const [accuracy, setAccuracy] = React.useState(0);
-  const [typedWords, setTypedWords] = React.useState<Array<TypingWord>>([]);
   const [gameId, setGameId] = React.useState<string>(Date.now().toString());
-  const [maxSpeed, setMaxSpeed] = React.useState(0);
 
-  const onGameOver = (wordList: TypingWord[]) => {
+  const onGameOver = (wordList: TypingWord[], startTime: number, endTime: number) => {
     if (isGameOver) return;
+    if (!endTime) endTime = Date.now();
     const totalTypedWordList: TypingWord[] = [];
     let wrongWords = 0,
       grossSpeed = 0,
-      totalTypedWords = 0,
       maxSpeedWord = 0,
-      totalTypedChars = 0;
+      totalTypedChars = 0,
+      wrongChars = 0;
     wordList.forEach((word: TypingWord) => {
       if (isNaN(word.startTime) || isNaN(word.endTime)) return;
-      totalTypedWords++;
       totalTypedChars += word.typed.length;
       if (word.endTime === word.startTime) {
         // this is the condition when a word is skipped.
@@ -58,31 +56,35 @@ function App() {
         );
       }
       if (word.speed > maxSpeedWord) maxSpeedWord = word.speed;
-      if (word.wrongChars > 0) wrongWords++;
+      if (word.wrongChars > 0) {
+        wrongWords++;
+        wrongChars++;
+      }
       grossSpeed += word.speed;
       totalTypedWordList.push(word);
     });
     if (constraint === 'time')
       grossSpeed = Math.round(totalTypedChars / 5 / (constraintLimit / 60));
-    else grossSpeed = Math.round(grossSpeed / totalTypedWords);
+    else grossSpeed = Math.round(getTypingSpeed(startTime, endTime, totalTypedChars, wrongChars));
     const netWpm = Math.round(grossSpeed - wrongWords);
     const acc = Math.round((netWpm / grossSpeed) * 100);
-    setGrossSpeed(grossSpeed);
-    setNetSpeed(netWpm);
-    setAccuracy(acc);
-    setWrongWords(wrongWords);
+
     setIsGameOver(true);
-    setTypedWords(totalTypedWordList);
-    setMaxSpeed(Math.round(maxSpeedWord));
+    const result = {
+      id: new Date().toISOString(),
+      constraint: constraint,
+      constraintLimit: constraintLimit,
+      accuracy: acc,
+      grossSpeed: grossSpeed,
+      netSpeed: netWpm,
+      wrongWords: wrongWords,
+    };
+    dispatch(addResult(result));
     dispatch(
-      addResult({
-        id: new Date().toISOString(),
-        constraint: constraint,
-        constraintLimit: constraintLimit,
-        accuracy: acc,
-        grossSpeed: grossSpeed,
-        netSpeed: netWpm,
-        wrongWords: wrongWords,
+      setMostRecentResult({
+        ...result,
+        maxSpeed: Math.round(maxSpeedWord),
+        typedWords: totalTypedWordList,
       })
     );
   };
@@ -91,7 +93,7 @@ function App() {
     setGameId(Date.now().toString());
     const wordsGenerated: string[] = [];
     let wordsCounter = numberOfWordsNeeded;
-    const wordsToUse = difficulty === 'easy' ? COMMON_WORDS : RANDOM_WORDS
+    const wordsToUse = difficulty === 'easy' ? COMMON_WORDS : RANDOM_WORDS;
     while (wordsCounter > 0) {
       const randomIndex = Math.floor(Math.random() * 1000);
       const randomWord = wordsToUse[randomIndex];
@@ -107,12 +109,6 @@ function App() {
 
   const resetAll = () => {
     setIsGameOver(false);
-    setWrongWords(0);
-    setGrossSpeed(0);
-    setNetSpeed(0);
-    setAccuracy(0);
-    setTypedWords([]);
-    setMaxSpeed(0);
     // @ts-expect-error the interval is added on window object. Later should be moved to context API
     for (let i = 0; i <= window.typeTestIntervalRef; i++) {
       clearInterval(i);
@@ -135,22 +131,14 @@ function App() {
 
   React.useEffect(() => {
     dispatch(initializeState());
-  }, [])
+  }, []);
 
   return (
     <>
       <Header />
       <Menu />
       {isGameOver ? (
-        <TypingResult
-          accuracy={accuracy}
-          grossSpeed={grossSpeed}
-          netSpeed={netSpeed}
-          wrongWords={wrongWords}
-          wordsList={typedWords}
-          maxSpeed={maxSpeed}
-          constraintLimit={constraintLimit}
-        />
+        <TypingResult />
       ) : (
         <TypingArea
           key={gameId}

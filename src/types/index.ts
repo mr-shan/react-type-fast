@@ -26,4 +26,6 @@ export interface TypingResult {
   grossSpeed: number;
   netSpeed: number;
   wrongWords: number;
+  maxSpeed?: number;
+  typedWords?: TypingWord[];
 }

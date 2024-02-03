@@ -21,9 +21,14 @@
 .leaderBoardResults {
   display: flex;
   flex-direction: column;
-  overflow: scroll;
+  overflow-y: scroll;
   height: 70dvh;
   height: 70vh;
+  padding-right: 2px;
+}
+
+.leaderBoardResult:last-child {
+  margin-bottom: 0;
 }
 
 .leaderBoardResult {

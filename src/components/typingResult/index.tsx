@@ -1,27 +1,25 @@
 import { TypingWord } from '../../types';
 import styles from './style.module.css';
 
-interface IProps {
-  wordsList: TypingWord[];
-  grossSpeed: number;
-  netSpeed: number;
-  wrongWords: number;
-  accuracy: number;
-  maxSpeed: number;
-  constraintLimit: number;
-}
+import { useAppSelector } from '../../store/hooks';
 
-const TypingResult = (props: IProps) => {
+const TypingResult = () => {
+  const result = useAppSelector(state => state.typingResults.mostRecentResult);
+  if (!result || !result?.maxSpeed) {
+    return <div>Please complete typing test to see results.</div>
+  }
   const yAxis = [
     0,
-    Math.floor(props.maxSpeed / 4),
-    Math.floor(props.maxSpeed / 2),
-    props.maxSpeed,
+    Math.floor(result.maxSpeed / 4),
+    Math.floor(result.maxSpeed / 2),
+    result.maxSpeed,
   ];
   const xAxis = [];
-  for (let i = 0; i < props.constraintLimit; i++) {
+  for (let i = 0; i < result.constraintLimit; i++) {
     xAxis.push(i + 1);
   }
+
+  const wordListLength = result.typedWords?.length || 0
 
   return (
     <div className={styles.container}>
@@ -48,14 +46,14 @@ const TypingResult = (props: IProps) => {
               {item}
             </span>
           ))}
-          {props.wordsList?.map((item: TypingWord, index: number) => (
+          {result.typedWords?.map((item: TypingWord, index: number) => (
             <span
               key={item.index}
               className={styles.chartItem}
               style={{
-                left: `${((index + 1) / props.wordsList?.length) * 100}%`,
+                left: `${((index + 1) / wordListLength) * 100}%`,
                 // @ts-expect-error Typing speed can not be undefined.
-                bottom: `${(item.speed / props.maxSpeed) * 100}%`,
+                bottom: `${(item.speed / result.maxSpeed) * 100}%`,
                 background: item.wrongChars ? 'var(--error)' : ''
               }}
             >
@@ -65,19 +63,19 @@ const TypingResult = (props: IProps) => {
       </div>
       <div className={styles.stats}>
         <div className={styles.statItem}>
-          <div className={styles.statsScore}>{props.grossSpeed}</div>
+          <div className={styles.statsScore}>{result.grossSpeed}</div>
           <div className={styles.statsTitle}>Raw Speed</div>
         </div>
         <div className={styles.statItem}>
-          <div className={styles.statsScore}>{props.netSpeed}</div>
+          <div className={styles.statsScore}>{result.netSpeed}</div>
           <div className={styles.statsTitle}>Net Speed</div>
         </div>
         <div className={styles.statItem}>
-          <div className={styles.statsScore}>{props.wrongWords}</div>
+          <div className={styles.statsScore}>{result.wrongWords}</div>
           <div className={styles.statsTitle}>Mistakes</div>
         </div>
         <div className={styles.statItem}>
-          <div className={styles.statsScore}>{props.accuracy}%</div>
+          <div className={styles.statsScore}>{result.accuracy}%</div>
           <div className={styles.statsTitle}>Accuracy</div>
         </div>
       </div>
