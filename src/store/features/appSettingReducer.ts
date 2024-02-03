@@ -11,12 +11,38 @@ interface AppSettingState {
   difficulty: difficulty
 }
 
+//initial theme settings
+let theme = localStorage.getItem('theme');
+if (theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+} else {
+  const darkThemeMq = window.matchMedia('(prefers-color-scheme: dark)');
+  if (darkThemeMq.matches) {
+    theme = 'dark'
+    localStorage.setItem('theme', 'dark');
+  } else {
+    theme = 'light'
+    localStorage.setItem('theme', 'light');
+  }
+}
+
+// initial settings of time constraint and limit
+const initialConstraint = localStorage.getItem('typing-constraint') as timeConstraint || 'time';
+const initialLimitStr = localStorage.getItem('constraint-limit');
+let initialLimit = TIME_OPTIONS[0];
+if (initialLimitStr) {
+  initialLimit = parseInt(initialLimitStr)
+}
+
+// initial settings for difficulty
+const difficultyLevel = localStorage.getItem('difficulty') as difficulty;
+
 // Define the initial state using that type
 const initialState: AppSettingState = {
-  theme: 'dark',
-  constraint: 'time',
-  constraintLimit: TIME_OPTIONS[0],
-  difficulty: 'easy'
+  theme: theme,
+  constraint: initialConstraint,
+  constraintLimit: initialLimit,
+  difficulty: difficultyLevel || 'easy'
 };
 
 export const appSettingSlice = createSlice({
@@ -31,12 +57,16 @@ export const appSettingSlice = createSlice({
         action.payload === 'time' ? TIME_OPTIONS[0] : WORDS_OPTIONS[0];
       state.constraint = action.payload;
       state.constraintLimit = limit;
+      localStorage.setItem('typing-constraint', action.payload);
+      localStorage.setItem('constraint-limit', limit.toString());
     },
     setConstraintLimit: (state, action: PayloadAction<number>) => {
       state.constraintLimit = action.payload;
+      localStorage.setItem('constraint-limit', action.payload.toString());
     },
     setDifficulty: (state: AppSettingState, action: PayloadAction<difficulty>) => {
       state.difficulty = action.payload
+      localStorage.setItem('difficulty', action.payload)
     }
   },
 });

@@ -31,6 +31,22 @@
   --component-margin: 8%;
 }
 
+[data-theme="dark-orange"] {
+  --text-1: #a5a5a5;
+  --text-2: #ccc;
+  --bg-1: #1b1b1b;
+  --bg-2: #222;
+  --bg-3: #111;
+  --primary: #ff9a43;
+  --secondary: #e0d6ce;
+  --accent: #ff7600;
+  --error: #FF4040;
+
+  --border-radius: 1.25rem;
+  --h1: 36px;
+  --component-margin: 8%;
+}
+
 @media screen and (max-width: 48rem) {
   :root {
     --component-margin: 5rem;

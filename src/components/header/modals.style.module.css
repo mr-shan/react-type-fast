@@ -86,6 +86,10 @@ select {
   font-size: 1rem;
   border-radius: 10px;
   cursor: pointer;
+  background: var(--bg-1);
+  color: var(--text-2);
+  min-width: 7rem;
+  font-size: 0.9rem;
 }
 
 @media screen and (max-width: 48rem) {

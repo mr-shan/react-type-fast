@@ -80,6 +80,9 @@ const ModalsOg = (props: IProps) => {
                 <option title='light' value='light'>
                   Light
                 </option>
+                <option title='dark-orange' value='dark-orange'>
+                  Orange (dark)
+                </option>
               </select>
             </div>
             <div className={styles.settingItem}>
