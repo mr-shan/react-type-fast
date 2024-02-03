@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import styles from './style.module.css';
@@ -36,6 +36,7 @@ const TypingArea = (props: IProps) => {
   const endTime = useAppSelector((state) => state.typingProgress.endTime);
 
   const [timerValue, startTimer, endTimer] = useTimer();
+  const [inputVal] = useState('');
 
   const [wordList, setWordList] = React.useState<Array<TypingWord>>([]);
   const [totalCharTyped, setTotalCharTyped] = React.useState(0);
@@ -61,21 +62,16 @@ const TypingArea = (props: IProps) => {
     wordInProcess.wrongChars = incorrectChars;
   };
 
-  const keyPressHandler = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (KEYS_TO_AVOID.includes(event.key)) return;
-    if (event.altKey || event.ctrlKey || event.metaKey) return;
-    if (currentCharIndex === 0 && event.key === ' ') return;
+  const inputHandler = (input: string) => {
+    if (currentCharIndex === 0 && input === ' ') return;
 
     if (currentCharIndex === 0 && currentWordIndex === 0 && startTime === 0) {
       dispatch(startTest());
       startTimer();
     }
 
-    const key = event.key;
-
-    switch (key) {
+    switch (input) {
       case ' ':
-        event.preventDefault();
         dispatch(setCurrentCharIndex(0));
         dispatch(setCurrentWordIndex(currentWordIndex + 1));
         // handle the condition where a word is not completely typed but space
@@ -104,7 +100,6 @@ const TypingArea = (props: IProps) => {
         }
         break;
       case 'Backspace':
-        event.preventDefault();
         if (currentCharIndex === 0) {
           if (currentWordIndex === 0) return;
           const lastWord = wordList[currentWordIndex - 1];
@@ -124,14 +119,13 @@ const TypingArea = (props: IProps) => {
         }
         break;
       default:
-        event.preventDefault();
         const wordsCopy = [...wordList];
         const currentTime = Date.now();
         if (currentCharIndex === 0) {
           wordsCopy[currentWordIndex].startTime = currentTime;
         }
         wordsCopy[currentWordIndex].endTime = currentTime;
-        wordsCopy[currentWordIndex].typed += key;
+        wordsCopy[currentWordIndex].typed += input;
         setWordScore(wordsCopy[currentWordIndex]);
         setWordList(wordsCopy);
         setTotalCharTyped((oldChars) => oldChars + 1);
@@ -142,6 +136,15 @@ const TypingArea = (props: IProps) => {
       const lastWord = wordList[wordList.length - 1];
       if (lastWord.typed === lastWord.original) handleGameOver();
     }
+  }
+
+  const keyPressHandler = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'Unidentified') return
+    if (KEYS_TO_AVOID.includes(event.key)) return;
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+
+    event.preventDefault();
+    inputHandler(event.key)
   };
 
   const calculateSpeed = () => {
@@ -207,6 +210,8 @@ const TypingArea = (props: IProps) => {
         autoCapitalize='off'
         spellCheck={false}
         className={styles['type-fast-typing-area-input-ref']}
+        value={inputVal}
+        onChange={(event) => inputHandler(event.target.value)}
       />
       <div className={styles.typingStatsWrapper}>
         <span>{limitLeft}</span>
