@@ -79,6 +79,9 @@
   padding: 0.25rem 1rem;
   font-size: 1.25rem;
   color: var(--accent);
+  width: 100%;
+  padding: 0;
+  justify-content: center;
 }
 
 .type-fast-typing-area-input-ref {
@@ -107,10 +110,10 @@
 @media screen and (max-width: 24rem) {
   .typingStatsWrapper {
     font-size: 1rem;
-    padding: 1rem 2rem;
+    margin-top: 0.75rem;
   }
   .container {
-    margin-top: 3rem;
+    margin-top: 4rem;
     width: 70%;
     padding: 1rem 1.5rem;
   }
