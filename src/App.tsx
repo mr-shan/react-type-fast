@@ -5,6 +5,7 @@ import Menu from './components/menu/menu';
 import TypingArea from './components/typingArea';
 import RefreshIcon from './components/icons/refreshIcon';
 import TypingResult from './components/typingResult';
+import ModalsWrapper from './components/modals';
 
 import { useAppSelector, useAppDispatch } from './store/hooks';
 import {
@@ -153,6 +154,7 @@ function App() {
           <RefreshIcon width={36} height={36} />
         </button>
       </div>
+      <ModalsWrapper />
     </>
   );
 }

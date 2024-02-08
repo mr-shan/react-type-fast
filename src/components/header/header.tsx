@@ -7,30 +7,14 @@ import InfoIcon from '../icons/infoIcon';
 import LeaderBoardIcon from '../icons/leaderboardIcon';
 import SettingIcon from '../icons/settingIcon';
 
-import Modals from './modals';
+import { useAppDispatch } from '../../store/hooks';
+import { setModalVisibility } from '../../store/features/appSettingReducer';
 
 const HeaderOg = () => {
-  const [infoVisible, setInfoVisible] = React.useState(false);
-  const [settingsVisible, setSettingsVisible] = React.useState(false);
-  const [leaderBoardVisible, setLeaderBoardVisible] = React.useState(false);
-
-  const onCloseModalsHandler = (type: string) => {
-    switch (type) {
-      case 'info':
-        setInfoVisible(false);
-        break;
-      case 'settings':
-        setSettingsVisible(false);
-        break;
-      case 'leaderBoard':
-        setLeaderBoardVisible(false);
-        break;
-      default:
-        setInfoVisible(false);
-        setSettingsVisible(false);
-        setLeaderBoardVisible(false);
-    }
-  };
+  const dispatch = useAppDispatch();
+  const showModal = (event: string) => {
+    dispatch(setModalVisibility({ key: event, value: true }))
+  }
 
   const btnDims = { width: 28, height: 28 };
   return (
@@ -45,7 +29,7 @@ const HeaderOg = () => {
               name='Leader Board'
               title='Leader Board'
               className={[styles.navBtn, globalStyles.btn].join(' ')}
-              onClick={() => setLeaderBoardVisible(true)}
+              onClick={() => showModal('leaderBoard')}
             >
               <LeaderBoardIcon width={btnDims.width} height={btnDims.height} />
             </button>
@@ -55,7 +39,7 @@ const HeaderOg = () => {
               name='About this app'
               title='About this app'
               className={[styles.navBtn, globalStyles.btn].join(' ')}
-              onClick={() => setInfoVisible(true)}
+              onClick={() => showModal('info')}
             >
               <InfoIcon width={btnDims.width} height={btnDims.height} />
             </button>
@@ -65,19 +49,13 @@ const HeaderOg = () => {
               name='Settings'
               title='Settings'
               className={[styles.navBtn, globalStyles.btn].join(' ')}
-              onClick={() => setSettingsVisible(true)}
+              onClick={() => showModal('settings')}
             >
               <SettingIcon width={btnDims.width} height={btnDims.height} />
             </button>
           </li>
         </ul>
       </nav>
-      <Modals
-        infoModal={infoVisible}
-        leaderBoard={leaderBoardVisible}
-        settings={settingsVisible}
-        onClose={onCloseModalsHandler}
-      />
     </header>
   );
 };

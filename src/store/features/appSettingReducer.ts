@@ -8,7 +8,12 @@ interface AppSettingState {
   theme: string;
   constraint: timeConstraint;
   constraintLimit: number;
-  difficulty: difficulty
+  difficulty: difficulty;
+  modals: {
+    settings: boolean,
+    info: boolean,
+    leaderBoard: boolean
+  }
 }
 
 //initial theme settings
@@ -18,20 +23,21 @@ if (theme) {
 } else {
   const darkThemeMq = window.matchMedia('(prefers-color-scheme: dark)');
   if (darkThemeMq.matches) {
-    theme = 'dark'
+    theme = 'dark';
     localStorage.setItem('theme', 'dark');
   } else {
-    theme = 'light'
+    theme = 'light';
     localStorage.setItem('theme', 'light');
   }
 }
 
 // initial settings of time constraint and limit
-const initialConstraint = localStorage.getItem('typing-constraint') as timeConstraint || 'time';
+const initialConstraint =
+  (localStorage.getItem('typing-constraint') as timeConstraint) || 'time';
 const initialLimitStr = localStorage.getItem('constraint-limit');
 let initialLimit = TIME_OPTIONS[0];
 if (initialLimitStr) {
-  initialLimit = parseInt(initialLimitStr)
+  initialLimit = parseInt(initialLimitStr);
 }
 
 // initial settings for difficulty
@@ -42,7 +48,12 @@ const initialState: AppSettingState = {
   theme: theme,
   constraint: initialConstraint,
   constraintLimit: initialLimit,
-  difficulty: difficultyLevel || 'easy'
+  difficulty: difficultyLevel || 'easy',
+  modals: {
+    settings: false,
+    info: false,
+    leaderBoard: false
+  }
 };
 
 export const appSettingSlice = createSlice({
@@ -64,14 +75,21 @@ export const appSettingSlice = createSlice({
       state.constraintLimit = action.payload;
       localStorage.setItem('constraint-limit', action.payload.toString());
     },
-    setDifficulty: (state: AppSettingState, action: PayloadAction<difficulty>) => {
-      state.difficulty = action.payload
-      localStorage.setItem('difficulty', action.payload)
+    setDifficulty: (
+      state: AppSettingState,
+      action: PayloadAction<difficulty>
+    ) => {
+      state.difficulty = action.payload;
+      localStorage.setItem('difficulty', action.payload);
+    },
+    setModalVisibility: (state: AppSettingState, action: PayloadAction<{key: string, value: boolean}>) => {
+      const oldModals = { ...state.modals };
+      state.modals = { ...oldModals, ...{[action.payload.key]: action.payload.value} }
     }
   },
 });
 
-export const { setConstraint, setConstraintLimit, setTheme, setDifficulty } =
+export const { setConstraint, setConstraintLimit, setTheme, setDifficulty, setModalVisibility } =
   appSettingSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type

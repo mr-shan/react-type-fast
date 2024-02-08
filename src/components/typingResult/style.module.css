@@ -79,6 +79,19 @@
   padding-left: 4px;
 }
 
+.xAxisTitle {
+  position: absolute;
+  font-size: 0.7rem;
+  left: 4rem;
+  bottom: 1rem;
+}
+.yAxisTitle {
+  position: absolute;
+  font-size: 0.7rem;
+  left: 0rem;
+  bottom: 2rem;
+}
+
 @media screen and (max-width: 48rem) {
   .stats {
     width: 90%;

@@ -60,6 +60,8 @@ const TypingResult = () => {
             </span>
           ))}
         </div>
+        <span className={styles.xAxisTitle}>Time</span>
+        <span className={styles.yAxisTitle}>Speed <br/> (WPM)</span>
       </div>
       <div className={styles.stats}>
         <div className={styles.statItem}>
